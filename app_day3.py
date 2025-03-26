@@ -28,30 +28,11 @@ db.init_app(app)
 migrate = Migrate(app, db)
 
 
-class AuthorModel(db.Model):
-    __tablename__ = "authors"
-    id: Mapped[int] = mapped_column(primary_key=True)
-    name: Mapped[int] = mapped_column(String(32), index=True, unique=True)
-    quotes: Mapped[list["QuoteModel"]] = relationship(
-        back_populates="author", lazy="dynamic"
-    )
-
-    def __init__(self, name):
-        self.name = name
-
-    def to_dict(self):
-        return {
-            "id": self.id,
-            "name": self.name,
-        }
-
-
 class QuoteModel(db.Model):
     __tablename__ = "quotes"
 
     id: Mapped[int] = mapped_column(primary_key=True)
-    author_id: Mapped[str] = mapped_column(ForeignKey("authors.id"))
-    author: Mapped["AuthorModel"] = relationship(back_populates="quotes")
+    author: Mapped[str] = mapped_column(String(32))
     text: Mapped[str] = mapped_column(String(255))
     rating: Mapped[int] = mapped_column(default=1)
 
@@ -63,7 +44,7 @@ class QuoteModel(db.Model):
     def to_dict(self):
         return {
             "id": self.id,
-            "author_id": self.author_id,
+            "author": self.author,
             "text": self.text,
             "rating": self.rating,
         }
@@ -82,19 +63,6 @@ def hello_world():
 @app.route("/about")
 def about():
     return about_me
-
-
-# CREATE AUTHOR
-@app.route("/authors", methods=["POST"])
-def create_author():
-    try:
-        author_data = request.json
-        author = AuthorModel(author_data["name"])
-        db.session.add(author)
-        db.session.commit()
-        return author.to_dict(), HTTPStatus.CREATED
-    except Exception as e:
-        abort(HTTPStatus.BAD_REQUEST, str(e))
 
 
 # GET ALL
