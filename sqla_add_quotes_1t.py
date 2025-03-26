@@ -1,4 +1,4 @@
-from app import app, db, QuoteModel
+from app_day3 import app, db, QuoteModel
 from quotes import quotes
 
 q1 = QuoteModel("Народная мудрость", "Нет пламя без огня")
