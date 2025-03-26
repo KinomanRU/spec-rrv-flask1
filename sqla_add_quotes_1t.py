@@ -1,9 +1,6 @@
 from app import app, db, QuoteModel
 from quotes import quotes
 
-with app.app_context():
-    db.create_all()
-
 q1 = QuoteModel("Народная мудрость", "Нет пламя без огня")
 with app.app_context():
     db.session.add(q1)
