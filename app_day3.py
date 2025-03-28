@@ -149,7 +149,7 @@ def delete(quote_id):
 @app.route("/filter")
 def set_filter():
     args = request.args.to_dict()
-    attrs = args.keys() & {"author", "rating"}
+    attrs = set(args.keys()) & {"author", "rating"}
     filters = {}
     for attr in attrs:
         filters[attr] = args[attr]
